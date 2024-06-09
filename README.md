@@ -22,5 +22,5 @@ project.
 
 ## License
 
-The current program is licensed under the MIT licese.
+The current program is licensed under the MIT license.
 
