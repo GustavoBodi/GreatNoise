@@ -3,8 +3,11 @@
 using NoiseGenerator;
 using NoisePresentation;
 
-var perlin = new EnhancedPerlinNoise(1000, new PerlinNoiseParameter(true));
-perlin.GenerateNoise();
-HeightMap noiseMap = perlin.GetNoiseMap();
+var map = new NoiseMap<double>(1000);
+var perlin = new EnhancedPerlinNoise(new PerlinNoiseParameter().SetShouldShuffle(true));
+var brownian = new BrownianMotion(new BrownianMotionParameter(perlin.GenerateNoiseOnPoint).SetOctaves(8));
+var domainWarping = new DomainWarping(new DomainWarpingParameter(brownian.GenerateNoiseOnPoint));
+map.AddProcess(domainWarping.GenerateNoiseOnPoint);
+map.GenerateNoise();
 var drawer = new MapBitmapDrawer();
-drawer.ToBitmap(noiseMap);
+drawer.ToBitmap(map);

@@ -2,16 +2,21 @@ namespace NoiseGenerator;
 
 public class PerlinNoiseParameter: INoiseParameter
 {
-    public PerlinNoiseParameter(bool usesBrownianMotion)
+    public PerlinNoiseParameter()
     {
-        UsesBrownianMotion = usesBrownianMotion;
     }
 
-    public bool UsesBrownianMotion { get; set; }
+    public PerlinNoiseParameter SetFrequency(Frequency frequency) {
+      Frequency = frequency;
+      return this;
+    }
 
-    public double Lacunarity { get; set; } = 0.5;
+    public PerlinNoiseParameter SetShouldShuffle(bool shouldShuffle) {
+      ShouldShuffle = shouldShuffle;
+      return this;
+    }
 
-    public double Persistency { get; set; } = 2.0;
+    public bool ShouldShuffle { get; set; } = false;
 
     public Frequency Frequency { get; set; } = new Frequency(0.01, 0.01);
 }

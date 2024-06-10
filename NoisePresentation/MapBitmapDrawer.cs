@@ -12,9 +12,9 @@ public unsafe class MapBitmapDrawer
     {
     }
 
-    public void ToBitmap(HeightMap heightMap)
+    public void ToBitmap(NoiseMap<double> noiseMap)
     {
-        var rawImage = heightMap.GetMapReference();
+        var rawImage = noiseMap.GetMapReference();
         int width = rawImage.GetLength(1);
         int height = rawImage.GetLength(0);
 
@@ -26,7 +26,18 @@ public unsafe class MapBitmapDrawer
                 for (int x = 0; x < width; x++)
                 {
                     // Assuming the values in the array represent color intensities (0-255)
-                    var colorNum = (byte)rawImage[y, x];
+                    var n = rawImage[x, y];
+                    n += 1.0;
+                    n *= 0.5;
+
+                    int c = (int)Math.Round(255 * n);
+                    if (c > 255) {
+                      c = 255;
+                    } else if (c < 0) {
+                      c = 0;
+                    }
+
+                    var colorNum = (byte)c;
                     
                     var color = new Rgba32(colorNum, colorNum, colorNum, 255);
                     image[x, y] = color;

@@ -1,12 +1,7 @@
 ﻿namespace NoiseGenerator;
 
-public interface INoiseAlgorithms<out TO, T>
+public interface INoiseAlgorithms<TO, T>
 where T: INoiseParameter
 {
-    void GenerateNoise();
-
-    HeightMap GetNoiseMap();
-
-    int GetMapSize();
-
+    TO GenerateNoiseOnPoint(TO x, TO y);
 }

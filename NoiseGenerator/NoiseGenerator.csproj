@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <PackageReference Include="MathNet.Numerics" Version="6.0.0-beta1" />
+      <PackageReference Include="System.Runtime.Numerics" Version="4.3.0" />
     </ItemGroup>
 
 </Project>
