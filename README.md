@@ -10,7 +10,7 @@ Current state of algorithms and features:
 - [x] FBM
 - [ ] SimplexNoise
 - [ ] Voronoi
-- [ ] DomainWarping
+- [x] DomainWarping
 - [ ] ValueNoise
 - [ ] Smooth voronoi
 
