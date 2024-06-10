@@ -5,7 +5,7 @@ using NoisePresentation;
 
 var map = new NoiseMap<double>(1000);
 var perlin = new EnhancedPerlinNoise(new PerlinNoiseParameter().SetShouldShuffle(true));
-var brownian = new BrownianMotion(new BrownianMotionParameter(perlin.GenerateNoiseOnPoint).SetOctaves(8));
+var brownian = new BrownianMotion(new BrownianMotionParameter(perlin.GenerateNoiseOnPoint).SetOctaves(12));
 var domainWarping = new DomainWarping(new DomainWarpingParameter(brownian.GenerateNoiseOnPoint));
 map.AddProcess(domainWarping.GenerateNoiseOnPoint);
 map.GenerateNoise();

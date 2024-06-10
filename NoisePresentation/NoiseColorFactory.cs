@@ -14,8 +14,19 @@ public class NoiseColorFactory
     static Rgba32 Grey      = new Rgba32(179, 179, 179 ); // grey: rocks
     static Rgba32 White     = new Rgba32(255, 255, 255 ); // white: snow
 
-    static void GenerateColor(double height)
+    public NoiseColorFactory()
     {
-        Rgba32 color;
+    }
+
+    public Rgba32 GenerateColor(double height)
+    {
+        if (height < 0.10) return new Rgba32(32, 77, 117); // Deep Ocean
+        else if (height < 0.2) return new Rgba32(54, 122, 189); // Shallow Water
+        else if (height < 0.3) return new Rgba32(118, 165, 175); // Beach
+        else if (height < 0.4) return new Rgba32(194, 178, 128); // Sand
+        else if (height < 0.6) return new Rgba32(141, 178, 85); // Grassland
+        else if (height < 0.75) return new Rgba32(34, 139, 34); // Forest Green
+        else if (height < 0.98) return new Rgba32(126, 94, 96); // Mountain Range
+        else return new Rgba32(255, 248, 240); // Snow Peaks
     }
 }

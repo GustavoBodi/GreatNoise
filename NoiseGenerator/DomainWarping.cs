@@ -17,6 +17,6 @@ public class DomainWarping : INoiseAlgorithms<double, DomainWarpingParameter>
         double qy = _parameters.Fn(x + offsetX, y + offsetY);
         double rx = _parameters.Fn(x + 2.0*qx + 1.7, y + 2.0*qy + 9.2);
         double ry = _parameters.Fn(x + 2.0*qx + 8.3, y + 2.0*qy + 2.8);
-        return _parameters.Fn(x + 80*rx, y + 70*ry);
+        return _parameters.Fn(x + 12*rx, y + 8*ry);
     }
 }

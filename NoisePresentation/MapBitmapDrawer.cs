@@ -29,6 +29,7 @@ public unsafe class MapBitmapDrawer
                     var n = rawImage[x, y];
                     n += 1.0;
                     n *= 0.5;
+                    n -= 0.1;
 
                     int c = (int)Math.Round(255 * n);
                     if (c > 255) {
@@ -39,7 +40,7 @@ public unsafe class MapBitmapDrawer
 
                     var colorNum = (byte)c;
                     
-                    var color = new Rgba32(colorNum, colorNum, colorNum, 255);
+                    var color = new NoiseColorFactory().GenerateColor(n);
                     image[x, y] = color;
                 }
             }
