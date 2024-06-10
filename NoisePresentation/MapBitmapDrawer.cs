@@ -12,7 +12,7 @@ public unsafe class MapBitmapDrawer
     {
     }
 
-    public void ToBitmap(NoiseMap<double> noiseMap)
+    public void ToBitmap(NoiseMap<double> noiseMap, bool gray = false)
     {
         var rawImage = noiseMap.GetMapReference();
         int width = rawImage.GetLength(1);
@@ -31,17 +31,21 @@ public unsafe class MapBitmapDrawer
                     n *= 0.5;
                     n -= 0.1;
 
-                    int c = (int)Math.Round(255 * n);
-                    if (c > 255) {
-                      c = 255;
-                    } else if (c < 0) {
-                      c = 0;
-                    }
+                    if (gray) {
+                      int c = (int)Math.Round(255 * n);
+                      if (c > 255) {
+                        c = 255;
+                      } else if (c < 0) {
+                        c = 0;
+                      }
 
-                    var colorNum = (byte)c;
-                    
-                    var color = new NoiseColorFactory().GenerateColor(n);
-                    image[x, y] = color;
+                      var colorNum = (byte)c;
+                      var color = new Rgba32(colorNum, colorNum, colorNum, 255);
+                      image[x, y] = color;
+                    } else {
+                      var color = new NoiseColorFactory().GenerateColor(n);
+                      image[x, y] = color;
+                    }
                 }
             }
 

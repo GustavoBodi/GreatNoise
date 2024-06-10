@@ -5,14 +5,14 @@ namespace NoiseGenerator;
 
 public class EnhancedPerlinNoise: INoiseAlgorithms<double, PerlinNoiseParameter>
 {
-    private readonly PerlinNoiseParameter _parameters;
+    private readonly PerlinNoiseParameter _parameters = new PerlinNoiseParameter();
 
-    public EnhancedPerlinNoise(PerlinNoiseParameter parameters)
+    public EnhancedPerlinNoise(PerlinNoiseParameter? parameters = null)
     {
-        _parameters = parameters;
-        if (parameters.ShouldShuffle) {
+        if (parameters != null)
+          _parameters = parameters;
+        if (_parameters.ShouldShuffle)
           ShufflePermutationTable();
-        }
     }
 
     Vector<double> GetConstantVector(int v)
@@ -58,28 +58,36 @@ public class EnhancedPerlinNoise: INoiseAlgorithms<double, PerlinNoiseParameter>
         var xf = x - Math.Floor(x);
         var yf = y - Math.Floor(y);
 
-        var topRight = Vector<double>.Build.DenseOfArray(new [] { xf - 1.0, yf - 1.0 });
-        var topLeft = Vector<double>.Build.DenseOfArray(new [] { xf, yf - 1.0 });
-        var bottomRight = Vector<double>.Build.DenseOfArray(new [] { xf - 1.0, yf });
-        var bottomLeft = Vector<double>.Build.DenseOfArray(new [] { (double)xf, (double)yf });
+        var grad11 = Vector<double>.Build.DenseOfArray(new [] { xf - 1.0, yf - 1.0 });
+        var grad01 = Vector<double>.Build.DenseOfArray(new [] { xf, yf - 1.0 });
+        var grad10 = Vector<double>.Build.DenseOfArray(new [] { xf - 1.0, yf });
+        var grad00 = Vector<double>.Build.DenseOfArray(new [] { (double)xf, (double)yf });
 
         var topRightPerm = _table[_table[xWrap + 1] + yWrap + 1];
         var topLeftPerm = _table[_table[xWrap] + yWrap + 1];
         var bottomRightPerm = _table[_table[xWrap + 1] + yWrap];
         var bottomLeftPerm = _table[_table[xWrap] + yWrap];
 
-        var dotTopRight = topRight * GetConstantVector(topRightPerm);
-        var dotTopLeft = topLeft * GetConstantVector(topLeftPerm);
-        var dotBottomRight = bottomRight * GetConstantVector(bottomRightPerm);
-        var dotBottomLeft = bottomLeft * GetConstantVector(bottomLeftPerm);
+        var dotTopRight = grad11 * GetConstantVector(topRightPerm);
+        var dotTopLeft = grad01 * GetConstantVector(topLeftPerm);
+        var dotBottomRight = grad10 * GetConstantVector(bottomRightPerm);
+        var dotBottomLeft = grad00 * GetConstantVector(bottomLeftPerm);
 
         var u = Fade(xf);
         var v = Fade(yf);
 
+        var interpolated_x0 = Lerp(u, dotBottomLeft, dotBottomRight);
+
+        var interpolated_x1 = Lerp(u, dotTopLeft, dotTopRight);
+
+        var dx = (interpolated_x1 - interpolated_x0);
+
+        var dy = ((dotTopLeft - dotBottomLeft) * (1 - u) + (dotTopRight - dotBottomRight) * u);
+
         return Lerp(
-            u,
-            Lerp(v, dotBottomLeft, dotTopLeft),
-            Lerp(v, dotBottomRight, dotTopRight));
+            v,
+            interpolated_x0,
+            interpolated_x1);
     }
 
     private int[] _table = new int[512] { 151,160,137,91,90,15,

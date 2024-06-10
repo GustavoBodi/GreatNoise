@@ -21,10 +21,9 @@ public class NoiseMap<T>
 
     public void GenerateNoise() {
           Parallel.For(0, _mapSize, y => {
-              for (dynamic x = 0; x < _mapSize; ++x)
-              {
-                  _map[x,y] = _method(x, (dynamic)y);
-              }
+              Parallel.For(0, _mapSize, x => {
+                  _map[x,y] = _method((dynamic)x, (dynamic)y);
+              });
           });
     }
 
