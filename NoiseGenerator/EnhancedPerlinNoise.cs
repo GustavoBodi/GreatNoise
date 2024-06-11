@@ -29,6 +29,12 @@ public class EnhancedPerlinNoise: IDifferentialNoiseAlgorithm<double>
 
     private void ShufflePermutationTable()
     {
+        for (var i = 0; i < 256; ++i) {
+          _table[i] = i;
+        }
+        for (var i = 256; i < 512; ++i) {
+          _table[i] = _table[i - 256];
+        }
         var n = _table.Length;
         var rnd = new Random();
         while (n > 1)
@@ -48,6 +54,17 @@ public class EnhancedPerlinNoise: IDifferentialNoiseAlgorithm<double>
         return ((6 * t - 15) * t + 10) * t * t * t;
     }
 
+    private double DerivedFade(double t) {
+      return 30.0 * t * t * (t * (t - 2.0) + 1.0);
+    }
+
+    private double Grad(int hash, double x, double y, double z) {
+      int h = hash & 15;                      // CONVERT LO 4 BITS OF HASH CODE
+      double u = h<8 ? x : y,                 // INTO 12 GRADIENT DIRECTIONS.
+             v = h<4 ? y : h==12||h==14 ? x : z;
+      return ((h&1) == 0 ? u : -u) + ((h&2) == 0 ? v : -v);
+     }
+
     public double GenerateNoiseOnPoint(double x, double y)
     {
       var (result, dx, dy) = GenerateNoiseOnPointWithDerivative(x, y);
@@ -56,44 +73,40 @@ public class EnhancedPerlinNoise: IDifferentialNoiseAlgorithm<double>
 
     public (double, double, double) GenerateNoiseOnPointWithDerivative(double x, double y)
     {
-        x *= _parameters.Frequency.X;
-        y *= _parameters.Frequency.Y;
-        var xWrap = (int)Math.Floor(x) & 255;
-        var yWrap = (int)Math.Floor(y) & 255;
-        
-        var xf = x - Math.Floor(x);
-        var yf = y - Math.Floor(y);
+      x *= _parameters.Frequency.X;
+      y *= _parameters.Frequency.Y;
+      var z = 0.0;
+      int X = (int)Math.Floor(x) & 255;
+      int Y = (int)Math.Floor(y) & 255;
+      int Z = (int)Math.Floor(z) & 255;
+      x -= Math.Floor(x);
+      y -= Math.Floor(y);
+      z -= Math.Floor(z);
 
-        var grad11 = Vector<double>.Build.DenseOfArray(new [] { xf - 1.0, yf - 1.0 });
-        var grad01 = Vector<double>.Build.DenseOfArray(new [] { xf, yf - 1.0 });
-        var grad10 = Vector<double>.Build.DenseOfArray(new [] { xf - 1.0, yf });
-        var grad00 = Vector<double>.Build.DenseOfArray(new [] { (double)xf, (double)yf });
+      double u = Fade(x),
+             v = Fade(y),
+             w = Fade(z);
 
-        var topRightPerm = _table[_table[xWrap + 1] + yWrap + 1];
-        var topLeftPerm = _table[_table[xWrap] + yWrap + 1];
-        var bottomRightPerm = _table[_table[xWrap + 1] + yWrap];
-        var bottomLeftPerm = _table[_table[xWrap] + yWrap];
+      int A = _table[X  ]+Y, AA = _table[A]+Z, AB = _table[A+1]+Z,      // HASH COORDINATES OF
+          B = _table[X+1]+Y, BA = _table[B]+Z, BB = _table[B+1]+Z;      // THE 8 CUBE CORNERS,
 
-        var dotTopRight = grad11 * GetConstantVector(topRightPerm);
-        var dotTopLeft = grad01 * GetConstantVector(topLeftPerm);
-        var dotBottomRight = grad10 * GetConstantVector(bottomRightPerm);
-        var dotBottomLeft = grad00 * GetConstantVector(bottomLeftPerm);
+      double dx = (Grad(_table[BA  ], x-1, y  , z   ) - Grad(_table[AA  ], x  , y  , z   )) * v +
+                (Grad(_table[BB  ], x-1, y-1, z   ) - Grad(_table[AB  ], x  , y-1, z   )) * (1 - v);
 
-        var u = Fade(xf);
-        var v = Fade(yf);
+      double dy = (Grad(_table[AB  ], x  , y-1, z   ) - Grad(_table[AA  ], x  , y  , z   )) * u +
+                (Grad(_table[BB  ], x-1, y-1, z   ) - Grad(_table[BA  ], x-1, y  , z   )) * (1 - u);
 
-        var interpolated_x0 = Lerp(u, dotBottomLeft, dotBottomRight);
+      double dz = (Grad(_table[AA+1], x  , y  , z-1 ) - Grad(_table[AA  ], x  , y  , z   )) * w +
+                (Grad(_table[BA+1], x-1, y  , z-1 ) - Grad(_table[BA  ], x-1, y  , z   )) * (1 - w);
 
-        var interpolated_x1 = Lerp(u, dotTopLeft, dotTopRight);
-
-        var dx = (interpolated_x1 - interpolated_x0);
-
-        var dy = ((dotTopLeft - dotBottomLeft) * (1 - u) + (dotTopRight - dotBottomRight) * u);
-
-        return (Lerp(
-            v,
-            interpolated_x0,
-            interpolated_x1), dx, dy);
+      return (Lerp(w, Lerp(v, Lerp(u, Grad(_table[AA  ], x  , y  , z   ),  // AND ADD
+                                     Grad(_table[BA  ], x-1, y  , z   )), // BLENDED
+                             Lerp(u, Grad(_table[AB  ], x  , y-1, z   ),  // RESULTS
+                                     Grad(_table[BB  ], x-1, y-1, z   ))),// FROM  8
+                     Lerp(v, Lerp(u, Grad(_table[AA+1], x  , y  , z-1 ),  // CORNERS
+                                     Grad(_table[BA+1], x-1, y  , z-1 )), // OF CUBE
+                             Lerp(u, Grad(_table[AB+1], x  , y-1, z-1 ),
+                                     Grad(_table[BB+1], x-1, y-1, z-1 )))), dx, dy);
     }
 
     private int[] _table = new int[512] { 151,160,137,91,90,15,
