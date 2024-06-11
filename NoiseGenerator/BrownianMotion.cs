@@ -1,6 +1,6 @@
 namespace NoiseGenerator;
 
-public class BrownianMotion: INoiseAlgorithms<double>
+public class BrownianMotion: INoiseAlgorithm<double>
 {
     public BrownianMotionParameter _parameters;
 

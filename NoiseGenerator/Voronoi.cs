@@ -1,6 +1,6 @@
 namespace NoiseGenerator;
 
-public class Voronoi : INoiseAlgorithms<double>
+public class Voronoi : INoiseAlgorithm<double>
 {
     private VoronoiParameter _parameters { get; set; }
 

@@ -2,7 +2,7 @@ namespace NoiseGenerator;
 
 public class DomainWarpingParameter: INoiseParameter {
 
-    public INoiseAlgorithms<double> Fn { get; set; }
+    public INoiseAlgorithm<double> Fn { get; set; }
 
     public double AmplitudeX { get; set; } = 4;
 
@@ -14,7 +14,7 @@ public class DomainWarpingParameter: INoiseParameter {
       return this;
     }
 
-    public DomainWarpingParameter(INoiseAlgorithms<double> method)
+    public DomainWarpingParameter(INoiseAlgorithm<double> method)
     {
       Fn = method;
     }

@@ -1,6 +1,6 @@
 namespace NoiseGenerator;
 
-public class DomainWarping : INoiseAlgorithms<double>
+public class DomainWarping : INoiseAlgorithm<double>
 {
     private DomainWarpingParameter _parameters;
 

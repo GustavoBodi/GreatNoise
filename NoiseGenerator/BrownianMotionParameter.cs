@@ -8,9 +8,9 @@ public class BrownianMotionParameter: INoiseParameter
 
     public double Octaves { get; set; } = 8;
 
-    public INoiseAlgorithms<double> NoiseFn { get; set; }
+    public INoiseAlgorithm<double> NoiseFn { get; set; }
 
-    public BrownianMotionParameter(INoiseAlgorithms<double> noiseFn)
+    public BrownianMotionParameter(INoiseAlgorithm<double> noiseFn)
     {
       NoiseFn = noiseFn;
     }

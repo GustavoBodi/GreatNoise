@@ -2,9 +2,9 @@ namespace NoiseGenerator;
 
 public class VoronoiParameter : INoiseParameter
 {
-    public INoiseAlgorithms<double> Fn { get; set; }
+    public INoiseAlgorithm<double> Fn { get; set; }
 
-    public VoronoiParameter(INoiseAlgorithms<double> fn)
+    public VoronoiParameter(INoiseAlgorithm<double> fn)
     {
       Fn = fn;
     }

@@ -2,7 +2,7 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace NoiseGenerator;
 
-public class DlaNoiseCompositor: INoiseAlgorithms<double>
+public class DlaNoiseCompositor: INoiseAlgorithm<double>
 {
     private List<IDifferentialNoiseAlgorithm<double>> _algorithms = new List<IDifferentialNoiseAlgorithm<double>>();
 

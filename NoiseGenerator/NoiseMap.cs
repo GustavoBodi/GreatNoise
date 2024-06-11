@@ -6,9 +6,9 @@ public class NoiseMap<F>
 
     private int _mapSize;
 
-    private INoiseAlgorithms<F> _algorithm;
+    private INoiseAlgorithm<F> _algorithm;
 
-    public NoiseMap(int mapSize, INoiseAlgorithms<F> algorithm)
+    public NoiseMap(int mapSize, INoiseAlgorithm<F> algorithm)
     {
         _algorithm = algorithm;
         _mapSize = mapSize;

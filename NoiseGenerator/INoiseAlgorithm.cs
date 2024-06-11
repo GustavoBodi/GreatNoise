@@ -1,6 +1,6 @@
 ﻿namespace NoiseGenerator;
 
-public interface INoiseAlgorithms<TO>
+public interface INoiseAlgorithm<TO>
 {
     TO GenerateNoiseOnPoint(TO x, TO y);
 }
