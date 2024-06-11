@@ -1,33 +1,29 @@
 namespace NoiseGenerator;
 
-public class NoiseMap<T>
+public class NoiseMap<F>
 {
-    private T[,] _map;
+    private F[,] _map;
 
     private int _mapSize;
 
-    private Func<T, T, T>? _method;
+    private INoiseAlgorithms<F> _algorithm;
 
-    public NoiseMap(int mapSize)
+    public NoiseMap(int mapSize, INoiseAlgorithms<F> algorithm)
     {
+        _algorithm = algorithm;
         _mapSize = mapSize;
-        _map = new T[mapSize, mapSize];
-    }
-
-    public NoiseMap<T> AddProcess(Func<T, T, T> fn) {
-      _method = fn;
-      return this;
+        _map = new F[mapSize, mapSize];
     }
 
     public void GenerateNoise() {
           Parallel.For(0, _mapSize, y => {
               Parallel.For(0, _mapSize, x => {
-                  _map[x,y] = _method((dynamic)x, (dynamic)y);
+                  _map[x,y] = _algorithm.GenerateNoiseOnPoint((dynamic)x, (dynamic)y);
               });
           });
     }
 
-    public T[,] GetMapReference()
+    public F[,] GetMapReference()
     {
         return _map;
     }

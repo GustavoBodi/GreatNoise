@@ -1,7 +1,6 @@
 namespace NoiseGenerator;
 
-public interface IPostProcessNoiseAlgorithms<TO, T>
-where T: INoiseParameter
+public interface IPostProcessNoiseAlgorithms<TO>
 {
     TO GenerateNoise(TO x, TO y, Func<double, double, double> fn);
 }

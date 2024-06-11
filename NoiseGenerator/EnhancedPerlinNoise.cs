@@ -3,7 +3,7 @@ using MathNet.Numerics.LinearAlgebra.Double;
 
 namespace NoiseGenerator;
 
-public class EnhancedPerlinNoise: INoiseAlgorithms<double, PerlinNoiseParameter>
+public class EnhancedPerlinNoise: IDifferentialNoiseAlgorithm<double>
 {
     private readonly PerlinNoiseParameter _parameters = new PerlinNoiseParameter();
 
@@ -50,6 +50,12 @@ public class EnhancedPerlinNoise: INoiseAlgorithms<double, PerlinNoiseParameter>
 
     public double GenerateNoiseOnPoint(double x, double y)
     {
+      var (result, dx, dy) = GenerateNoiseOnPointWithDerivative(x, y);
+      return result;
+    }
+
+    public (double, double, double) GenerateNoiseOnPointWithDerivative(double x, double y)
+    {
         x *= _parameters.Frequency.X;
         y *= _parameters.Frequency.Y;
         var xWrap = (int)Math.Floor(x) & 255;
@@ -84,10 +90,10 @@ public class EnhancedPerlinNoise: INoiseAlgorithms<double, PerlinNoiseParameter>
 
         var dy = ((dotTopLeft - dotBottomLeft) * (1 - u) + (dotTopRight - dotBottomRight) * u);
 
-        return Lerp(
+        return (Lerp(
             v,
             interpolated_x0,
-            interpolated_x1);
+            interpolated_x1), dx, dy);
     }
 
     private int[] _table = new int[512] { 151,160,137,91,90,15,

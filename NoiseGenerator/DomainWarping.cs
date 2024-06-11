@@ -1,6 +1,6 @@
 namespace NoiseGenerator;
 
-public class DomainWarping : INoiseAlgorithms<double, DomainWarpingParameter>
+public class DomainWarping : INoiseAlgorithms<double>
 {
     private DomainWarpingParameter _parameters;
 
@@ -13,10 +13,10 @@ public class DomainWarping : INoiseAlgorithms<double, DomainWarpingParameter>
     {
         double offsetX = 7 * 10;
         double offsetY = 1.3 * 10;
-        double qx = _parameters.Fn(x, y);
-        double qy = _parameters.Fn(x + offsetX, y + offsetY);
-        double rx = _parameters.Fn(x + 2.0*qx + 1.7, y + 2.0*qy + 9.2);
-        double ry = _parameters.Fn(x + 2.0*qx + 8.3, y + 2.0*qy + 2.8);
-        return _parameters.Fn(x + _parameters.AmplitudeX*rx, y + _parameters.AmplitudeY*ry);
+        double qx = _parameters.Fn.GenerateNoiseOnPoint(x, y);
+        double qy = _parameters.Fn.GenerateNoiseOnPoint(x + offsetX, y + offsetY);
+        double rx = _parameters.Fn.GenerateNoiseOnPoint(x + 2.0*qx + 1.7, y + 2.0*qy + 9.2);
+        double ry = _parameters.Fn.GenerateNoiseOnPoint(x + 2.0*qx + 8.3, y + 2.0*qy + 2.8);
+        return _parameters.Fn.GenerateNoiseOnPoint(x + _parameters.AmplitudeX*rx, y + _parameters.AmplitudeY*ry);
     }
 }

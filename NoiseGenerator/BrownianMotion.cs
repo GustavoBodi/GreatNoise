@@ -1,6 +1,6 @@
 namespace NoiseGenerator;
 
-public class BrownianMotion: INoiseAlgorithms<double, BrownianMotionParameter>
+public class BrownianMotion: INoiseAlgorithms<double>
 {
     public BrownianMotionParameter _parameters;
 
@@ -17,7 +17,7 @@ public class BrownianMotion: INoiseAlgorithms<double, BrownianMotionParameter>
 
         for (var octave = 0; octave < _parameters.Octaves; ++octave)
         {
-            result += amplitude * _parameters.NoiseFn(x * frequency, y * frequency);
+            result += amplitude * _parameters.NoiseFn.GenerateNoiseOnPoint(x * frequency, y * frequency);
 
             amplitude *= _parameters.Lacunarity;
             frequency *= _parameters.Persistency;
