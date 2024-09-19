@@ -13,6 +13,10 @@ Current state of algorithms and features:
 - [x] DomainWarping
 - [ ] ValueNoise
 - [ ] Smooth voronoi
+- [ ] Biomes
+- [ ] Temperature
+- [ ] Humidity
+- [ ] Procedural inherent properties
 
 ## Organization
 
